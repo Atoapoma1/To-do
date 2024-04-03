@@ -1,6 +1,16 @@
 #Create the todo to take a list
 #Store the data in text files
 
+def get_todos(filepath):
+    with open(filepath, mode="r") as file:
+        todos = file.readlines()
+    return todos
+
+def write_todos(filepath, todos_arg):
+    with open(filepath, mode="w") as file:
+        file.writelines(todos_arg)
+
+
 filepath = r"C:/Users/Ato/Desktop/COURSES/PYTHON PROJECTS/WEBSERVER1/To do app/todos.txt"
 while True:
     user_action = input("Type add, show, edit, complete or exit: ")
@@ -9,17 +19,14 @@ while True:
     if user_action.startswith("add"):
         todo = user_action[4:]
 
-        with open(filepath, mode="r") as file:
-            todos = file.readlines()
+        todos = get_todos(filepath)
 
         todos.append(todo + "\n")
 
-        with  open(filepath, mode="w") as file:
-            file.writelines(todos)
+        write_todos(filepath, todos)
 
     elif user_action.startswith("show"):
-        with open(filepath, mode="r") as file:
-            todos = file.readlines()
+        todos = get_todos(filepath)
 
         # new_todos = []
 
@@ -39,32 +46,33 @@ while True:
             number = int(user_action[5:])
             number = number - 1
 
-            with open(filepath, mode="r") as file:
-                todos = file.readlines()
+            todos = get_todos(filepath)
 
             new_todo = input("Enter a new todo: ")
             todos[number] = new_todo + "\n"
             
-            with open(filepath, mode="w") as file:
-                file.writelines(todos)
+            write_todos(filepath, todos)
         except ValueError:
             print("Your command is not valid")
+            continue 
 
     elif user_action.startswith("complete"):
-        number = int(user_action[9:])
+        try:
+            number = int(user_action[9:])
 
-        with open(filepath, mode="r") as file:
-            todos = file.readlines()
+            todos = get_todos(filepath)
 
-        index = number - 1
-        todo_to_remove = todos[index].strip("\n")
-        todos.pop(index)
+            index = number - 1
+            todo_to_remove = todos[index].strip("\n")
+            todos.pop(index)
 
-        with open(filepath, mode="w") as file:
-            file.writelines(todos)
+            write_todos(filepath, todos)
 
-        message = f"Todo: {todo_to_remove} was removed from the list"
-        print(message)
+            message = f"Todo: {todo_to_remove} was removed from the list"
+            print(message)
+        except IndexError:
+            print("There is no item with that Index")
+            continue
 
     elif user_action.startswith("exit"):
         break
